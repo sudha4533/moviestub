@@ -11,7 +11,8 @@
             <p>
                 <span class="label label-warning availability">Availability ({{movie.availability}})</span>
                 <a ng-href="#!/movie/{{movie.id}}" class="btn btn-primary">Review</a>
-                <a href="#" class="btn btn-success " role="button ">Book »</a>
+                <a data-ng-href="#!/bookTickets/{{movie.id}}" class="btn btn-success " role="button" data-ng-disabled="movie.availability == 0">Book »</a>
+                <!-- <a href="#" class="btn btn-success " role="button ">Book »</a> -->
             </p>
         </div>
     </div>

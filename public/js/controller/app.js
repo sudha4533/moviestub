@@ -1,4 +1,4 @@
-window.movieStubApp = angular.module('movieStubApp', ['ngRoute' , 'ngResource']);
+window.movieStubApp = angular.module('movieStubApp', ['ngRoute', 'ngResource']);
 movieStubApp.controller("movieStubController", function ($scope, movieStubFactory) {
     $scope.headerSrc = "tmpl/header.html";
     $scope.movies = movieStubFactory.query();
@@ -46,9 +46,53 @@ movieStubApp.controller("movieStubController", function ($scope, movieStubFactor
     };
 
     $scope.getCount = function (n) {
-         return new Array(n);
+        return new Array(n);
+    };
+
+    $scope.isActive = function (route) {
+        return route === $location.path();
+    };
+ 
+    $scope.isActivePath = function (route) {
+        return ($location.path()).indexOf(route) >= 0;
     };
 });
 movieStubApp.controller("movieDetailsController", function ($scope, $routeParams) {
     $scope.getMovieById($routeParams.id);
+});
+
+movieStubApp.controller("bookTicketsController", function ($scope, $http, $location, $routeParams) {
+    $scope.getMovieById($routeParams.id);
+    $scope.onlyNumbers = /^\d+$/;
+    $scope.formData = {};
+    $scope.formData.movie_id = $scope.currMovie.id;
+    $scope.formData.movie_name = $scope.currMovie.name;
+    $scope.formData.date = "Today"
+    $scope.processForm = function () {
+        $http({
+            method: 'POST',
+            url: '/book',
+            data: $.param($scope.formData), // pass in data as strings
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            } // set the headers so angular passing info as form data (not request payload)
+        })
+            // up until angular 1.4.3
+            // .success(function (data) {
+            //         console.log(data);
+            // });
+
+            //from angular 1.6.x
+            .then(function (success) {
+                $location.path("/bookings");
+                //console.log(success.data);
+
+            }, function (error) {
+                console.log(error);
+            });
+    };
+});
+
+movieStubApp.controller("bookingDetailsController", function ($scope, movieStubBookingsFactory) {
+    $scope.bookings = movieStubBookingsFactory.query();
 });
